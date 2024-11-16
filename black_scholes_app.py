@@ -21,7 +21,13 @@ st.title("Expanded Black-Scholes Option Pricing Model with Sensitivities")
 st.markdown("For more details on the Black-Scholes model, check out our [documentation page](https://your-quarto-site.com/black_scholes).")
 
 # Reset functionality
-reset = st.button("Reset")
+col1, col2 = st.columns([1, 3])
+
+with col1:
+    reset = st.button("Reset")
+
+with col2:
+    calculate = st.button("Calculate")
 
 if reset:
     # Reset to default values
@@ -77,8 +83,8 @@ def calculate_greeks(S, K, T, r, sigma, q, d1, d2):
     vanna = d1 * vega / S  # Simplified Vanna formula
     return call_delta, put_delta, call_theta, put_theta, call_rho, put_rho, phi_call, phi_put, gamma, vega, vanna
 
-# Button to trigger calculations
-if st.button("Calculate"):
+# Perform calculation if "Calculate" button is pressed
+if calculate:
     if inputs_valid:
         with st.spinner("Calculating..."):
             # Perform calculations
