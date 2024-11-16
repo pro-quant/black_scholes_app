@@ -14,9 +14,20 @@ r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=0.05)
 sigma = st.number_input("Volatility (σ, enter as a decimal)", value=0.2)
 q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=0.0)
 
-# Check if dividend yield is input correctly as a decimal
-if q > 1:
-    st.warning("Please enter the dividend yield (q) as a decimal, e.g., 0.02 for 2%.")
+# Input validation
+inputs_valid = True
+
+if r < 0 or r > 1:
+    st.warning("Please enter the risk-free rate (r) as a decimal between 0 and 1 (e.g., 0.05 for 5%).")
+    inputs_valid = False
+
+if sigma < 0 or sigma > 1:
+    st.warning("Please enter the volatility (σ) as a decimal between 0 and 1 (e.g., 0.2 for 20%).")
+    inputs_valid = False
+
+if q < 0 or q > 1:
+    st.warning("Please enter the dividend yield (q) as a decimal between 0 and 1 (e.g., 0.02 for 2%).")
+    inputs_valid = False
 
 # Black-Scholes function for call and put options with dividends
 def black_scholes(S, K, T, r, sigma, q):
@@ -47,20 +58,22 @@ def calculate_greeks(S, K, T, r, sigma, q, d1, d2):
 
 # Button to trigger calculations
 if st.button("Calculate"):
-    # Add a spinner around the calculation process
-    with st.spinner("Calculating..."):
-        # Perform calculations
-        call_premium, put_premium, d1, d2 = black_scholes(S, K, T, r, sigma, q)
-        call_delta, put_delta, call_theta, put_theta, call_rho, put_rho, phi_call, phi_put, gamma, vega, vanna = calculate_greeks(S, K, T, r, sigma, q, d1, d2)
+    if inputs_valid:
+        with st.spinner("Calculating..."):
+            # Perform calculations
+            call_premium, put_premium, d1, d2 = black_scholes(S, K, T, r, sigma, q)
+            call_delta, put_delta, call_theta, put_theta, call_rho, put_rho, phi_call, phi_put, gamma, vega, vanna = calculate_greeks(S, K, T, r, sigma, q, d1, d2)
 
-    # Display a success message
-    st.success("Calculation completed! Check the table below for results.")
+        # Display a success message
+        st.success("Calculation completed! Check the table below for results.")
 
-    # Display the results as a table
-    data = {
-        "": ["Premium", "Delta", "Theta", "Rho", "Phi", "Charm", "Vanna", "Gamma", "Vega"],
-        "Call": [call_premium, call_delta, call_theta, call_rho, phi_call, None, vanna, gamma, vega],
-        "Put": [put_premium, put_delta, put_theta, put_rho, phi_put, None, vanna, gamma, vega]
-    }
-    df = pd.DataFrame(data)
-    st.dataframe(df)
+        # Display the results as a table
+        data = {
+            "": ["Premium", "Delta", "Theta", "Rho", "Phi", "Charm", "Vanna", "Gamma", "Vega"],
+            "Call": [call_premium, call_delta, call_theta, call_rho, phi_call, None, vanna, gamma, vega],
+            "Put": [put_premium, put_delta, put_theta, put_rho, phi_put, None, vanna, gamma, vega]
+        }
+        df = pd.DataFrame(data)
+        st.dataframe(df)
+    else:
+        st.warning("Fix the highlighted issues above to calculate.")
