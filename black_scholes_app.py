@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from scipy.stats import norm
 
 st.title("Expanded Black-Scholes Option Pricing Model with Sensitivities")
@@ -46,25 +45,22 @@ def calculate_greeks(S, K, T, r, sigma, q, d1, d2):
     vanna = d1 * vega / S  # Simplified Vanna formula
     return call_delta, put_delta, call_theta, put_theta, call_rho, put_rho, phi_call, phi_put, gamma, vega, vanna
 
-# Calculate current premiums and Greeks
-call_premium, put_premium, d1, d2 = black_scholes(S, K, T, r, sigma, q)
-call_delta, put_delta, call_theta, put_theta, call_rho, put_rho, phi_call, phi_put, gamma, vega, vanna = calculate_greeks(S, K, T, r, sigma, q, d1, d2)
+# Button to trigger calculations
+if st.button("Calculate"):
+    # Add a spinner around the calculation process
+    with st.spinner("Calculating..."):
+        # Perform calculations
+        call_premium, put_premium, d1, d2 = black_scholes(S, K, T, r, sigma, q)
+        call_delta, put_delta, call_theta, put_theta, call_rho, put_rho, phi_call, phi_put, gamma, vega, vanna = calculate_greeks(S, K, T, r, sigma, q, d1, d2)
 
-# Table data
-data = {
-    "": ["Premium", "Delta", "Theta", "Rho", "Phi", "Charm", "Vanna", "Gamma", "Vega"],
-    "Call": [call_premium, call_delta, call_theta, call_rho, phi_call, None, vanna, gamma, vega],
-    "Put": [put_premium, put_delta, put_theta, put_rho, phi_put, None, vanna, gamma, vega]
-}
+    # Display a success message
+    st.success("Calculation completed! Check the table below for results.")
 
-# Convert to DataFrame
-df = pd.DataFrame(data)
-
-# Style function to color negative values in orange
-def highlight_negative(val):
-    color = 'orange' if val < 0 else 'black'
-    return f'color: {color}'
-
-# Display table with styling
-st.subheader("Option Values and Greeks Summary")
-st.dataframe(df.style.applymap(highlight_negative, subset=['Call', 'Put']).format(precision=3))
+    # Display the results as a table
+    data = {
+        "": ["Premium", "Delta", "Theta", "Rho", "Phi", "Charm", "Vanna", "Gamma", "Vega"],
+        "Call": [call_premium, call_delta, call_theta, call_rho, phi_call, None, vanna, gamma, vega],
+        "Put": [put_premium, put_delta, put_theta, put_rho, phi_put, None, vanna, gamma, vega]
+    }
+    df = pd.DataFrame(data)
+    st.dataframe(df)
