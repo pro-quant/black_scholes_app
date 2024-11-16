@@ -13,20 +13,20 @@ default_values = {
     "q": 0.0
 }
 
-# Session state to store input values
+# Initialize session state
 if "values" not in st.session_state:
-    st.session_state.values = default_values.copy()
+    st.session_state["values"] = default_values.copy()
 
 st.title("Expanded Black-Scholes Option Pricing Model with Sensitivities")
 st.markdown("For more details on the Black-Scholes model, check out our [documentation page](https://your-quarto-site.com/black_scholes).")
 
 # Input fields for the Black-Scholes model with dividends
-S = st.number_input("Stock Price (S)", value=st.session_state.values["S"])
-K = st.number_input("Strike Price (K)", value=st.session_state.values["K"])
-T = st.number_input("Time to Maturity (T, in years)", value=st.session_state.values["T"])
-r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=st.session_state.values["r"])
-sigma = st.number_input("Volatility (σ, enter as a decimal)", value=st.session_state.values["sigma"])
-q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=st.session_state.values["q"])
+S = st.number_input("Stock Price (S)", value=st.session_state["values"]["S"], key="S")
+K = st.number_input("Strike Price (K)", value=st.session_state["values"]["K"], key="K")
+T = st.number_input("Time to Maturity (T, in years)", value=st.session_state["values"]["T"], key="T")
+r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=st.session_state["values"]["r"], key="r")
+sigma = st.number_input("Volatility (σ, enter as a decimal)", value=st.session_state["values"]["sigma"], key="sigma")
+q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=st.session_state["values"]["q"], key="q")
 
 # Input validation
 inputs_valid = True
@@ -81,7 +81,7 @@ with col2:
 
 if reset:
     # Reset to default values
-    st.session_state.values = default_values.copy()
+    st.session_state["values"] = default_values.copy()
     st.experimental_rerun()
 
 if calculate:
