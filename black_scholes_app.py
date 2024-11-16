@@ -3,16 +3,30 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
+# Define default values
+default_values = {
+    "S": 100.0,
+    "K": 100.0,
+    "T": 1.0,
+    "r": 0.05,
+    "sigma": 0.2,
+    "q": 0.0
+}
+
+# Session state to store input values
+if "values" not in st.session_state:
+    st.session_state.values = default_values.copy()
+
 st.title("Expanded Black-Scholes Option Pricing Model with Sensitivities")
 st.markdown("For more details on the Black-Scholes model, check out our [documentation page](https://your-quarto-site.com/black_scholes).")
 
 # Input fields for the Black-Scholes model with dividends
-S = st.number_input("Stock Price (S)", value=100.0)
-K = st.number_input("Strike Price (K)", value=100.0)
-T = st.number_input("Time to Maturity (T, in years)", value=1.0)
-r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=0.05)
-sigma = st.number_input("Volatility (σ, enter as a decimal)", value=0.2)
-q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=0.0)
+S = st.number_input("Stock Price (S)", value=st.session_state.values["S"])
+K = st.number_input("Strike Price (K)", value=st.session_state.values["K"])
+T = st.number_input("Time to Maturity (T, in years)", value=st.session_state.values["T"])
+r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=st.session_state.values["r"])
+sigma = st.number_input("Volatility (σ, enter as a decimal)", value=st.session_state.values["sigma"])
+q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=st.session_state.values["q"])
 
 # Input validation
 inputs_valid = True
@@ -56,8 +70,21 @@ def calculate_greeks(S, K, T, r, sigma, q, d1, d2):
     vanna = d1 * vega / S  # Simplified Vanna formula
     return call_delta, put_delta, call_theta, put_theta, call_rho, put_rho, phi_call, phi_put, gamma, vega, vanna
 
-# Button to trigger calculations
-if st.button("Calculate"):
+# Buttons to trigger calculations or reset
+col1, col2 = st.columns(2)
+
+with col1:
+    calculate = st.button("Calculate")
+
+with col2:
+    reset = st.button("Reset")
+
+if reset:
+    # Reset to default values
+    st.session_state.values = default_values.copy()
+    st.experimental_rerun()
+
+if calculate:
     if inputs_valid:
         with st.spinner("Calculating..."):
             # Perform calculations
