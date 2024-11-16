@@ -20,13 +20,20 @@ if "values" not in st.session_state:
 st.title("Expanded Black-Scholes Option Pricing Model with Sensitivities")
 st.markdown("For more details on the Black-Scholes model, check out our [documentation page](https://your-quarto-site.com/black_scholes).")
 
+# Reset functionality
+reset = st.button("Reset")
+
+if reset:
+    # Reset to default values
+    st.session_state["values"] = default_values.copy()
+
 # Input fields for the Black-Scholes model with dividends
-S = st.number_input("Stock Price (S)", value=st.session_state["values"]["S"], key="S")
-K = st.number_input("Strike Price (K)", value=st.session_state["values"]["K"], key="K")
-T = st.number_input("Time to Maturity (T, in years)", value=st.session_state["values"]["T"], key="T")
-r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=st.session_state["values"]["r"], key="r")
-sigma = st.number_input("Volatility (σ, enter as a decimal)", value=st.session_state["values"]["sigma"], key="sigma")
-q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=st.session_state["values"]["q"], key="q")
+S = st.number_input("Stock Price (S)", value=st.session_state["values"]["S"], key="S", step=1.0)
+K = st.number_input("Strike Price (K)", value=st.session_state["values"]["K"], key="K", step=1.0)
+T = st.number_input("Time to Maturity (T, in years)", value=st.session_state["values"]["T"], key="T", step=0.1)
+r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=st.session_state["values"]["r"], key="r", step=0.01)
+sigma = st.number_input("Volatility (σ, enter as a decimal)", value=st.session_state["values"]["sigma"], key="sigma", step=0.01)
+q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=st.session_state["values"]["q"], key="q", step=0.01)
 
 # Input validation
 inputs_valid = True
@@ -70,21 +77,8 @@ def calculate_greeks(S, K, T, r, sigma, q, d1, d2):
     vanna = d1 * vega / S  # Simplified Vanna formula
     return call_delta, put_delta, call_theta, put_theta, call_rho, put_rho, phi_call, phi_put, gamma, vega, vanna
 
-# Buttons to trigger calculations or reset
-col1, col2 = st.columns(2)
-
-with col1:
-    calculate = st.button("Calculate")
-
-with col2:
-    reset = st.button("Reset")
-
-if reset:
-    # Reset to default values
-    st.session_state["values"] = default_values.copy()
-    st.experimental_rerun()
-
-if calculate:
+# Button to trigger calculations
+if st.button("Calculate"):
     if inputs_valid:
         with st.spinner("Calculating..."):
             # Perform calculations
