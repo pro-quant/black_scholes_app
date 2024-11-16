@@ -24,27 +24,12 @@ def run_app():
     st.markdown("For more details on the Black-Scholes model, check out our [documentation page](https://your-quarto-site.com/black_scholes).")
 
     # Input fields for the Black-Scholes model with dividends
-    S = st.number_input("Stock Price (S)", value=st.session_state["values"]["S"], key="input_S", step=1.0)
-    K = st.number_input("Strike Price (K)", value=st.session_state["values"]["K"], key="input_K", step=1.0)
-    T = st.number_input("Time to Maturity (T, in years)", value=st.session_state["values"]["T"], key="input_T", step=0.1)
-    r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=st.session_state["values"]["r"], key="input_r", step=0.01)
-    sigma = st.number_input("Volatility (σ, enter as a decimal)", value=st.session_state["values"]["sigma"], key="input_sigma", step=0.01)
-    q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=st.session_state["values"]["q"], key="input_q", step=0.01)
-
-    # Input validation
-    inputs_valid = True
-
-    if r < 0 or r > 1:
-        st.warning("Please enter the risk-free rate (r) as a decimal between 0 and 1 (e.g., 0.05 for 5%).")
-        inputs_valid = False
-
-    if sigma < 0 or sigma > 1:
-        st.warning("Please enter the volatility (σ) as a decimal between 0 and 1 (e.g., 0.2 for 20%).")
-        inputs_valid = False
-
-    if q < 0 or q > 1:
-        st.warning("Please enter the dividend yield (q) as a decimal between 0 and 1 (e.g., 0.02 for 2%).")
-        inputs_valid = False
+    S = st.number_input("Stock Price (S)", value=st.session_state["values"]["S"], key="S", step=1.0)
+    K = st.number_input("Strike Price (K)", value=st.session_state["values"]["K"], key="K", step=1.0)
+    T = st.number_input("Time to Maturity (T, in years)", value=st.session_state["values"]["T"], key="T", step=0.1)
+    r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=st.session_state["values"]["r"], key="r", step=0.01)
+    sigma = st.number_input("Volatility (σ, enter as a decimal)", value=st.session_state["values"]["sigma"], key="sigma", step=0.01)
+    q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=st.session_state["values"]["q"], key="q", step=0.01)
 
     # Buttons layout
     col1, col2 = st.columns([1, 1])  # Equal width for buttons, ensuring they are close
@@ -58,13 +43,20 @@ def run_app():
     if reset:
         # Reset values in the session state dictionary
         st.session_state["values"] = initialize_default_values()
-        # Update widget keys by reinitializing their values
-        st.session_state["input_S"] = st.session_state["values"]["S"]
-        st.session_state["input_K"] = st.session_state["values"]["K"]
-        st.session_state["input_T"] = st.session_state["values"]["T"]
-        st.session_state["input_r"] = st.session_state["values"]["r"]
-        st.session_state["input_sigma"] = st.session_state["values"]["sigma"]
-        st.session_state["input_q"] = st.session_state["values"]["q"]
+        # Reset inputs by resetting the widget values to defaults
+        st.experimental_rerun()  # Rerun the app to reflect reset values
+
+    # Input validation
+    inputs_valid = True
+    if r < 0 or r > 1:
+        st.warning("Please enter the risk-free rate (r) as a decimal between 0 and 1 (e.g., 0.05 for 5%).")
+        inputs_valid = False
+    if sigma < 0 or sigma > 1:
+        st.warning("Please enter the volatility (σ) as a decimal between 0 and 1 (e.g., 0.2 for 20%).")
+        inputs_valid = False
+    if q < 0 or q > 1:
+        st.warning("Please enter the dividend yield (q) as a decimal between 0 and 1 (e.g., 0.02 for 2%).")
+        inputs_valid = False
 
     # Black-Scholes function for call and put options with dividends
     def black_scholes(S, K, T, r, sigma, q):
