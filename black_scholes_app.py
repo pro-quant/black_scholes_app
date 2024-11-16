@@ -58,7 +58,13 @@ def run_app():
     if reset:
         # Reset to default values
         st.session_state["values"] = initialize_default_values()
-        st.experimental_rerun()
+        # Update the input fields
+        st.session_state.S = st.session_state["values"]["S"]
+        st.session_state.K = st.session_state["values"]["K"]
+        st.session_state.T = st.session_state["values"]["T"]
+        st.session_state.r = st.session_state["values"]["r"]
+        st.session_state.sigma = st.session_state["values"]["sigma"]
+        st.session_state.q = st.session_state["values"]["q"]
 
     # Black-Scholes function for call and put options with dividends
     def black_scholes(S, K, T, r, sigma, q):
