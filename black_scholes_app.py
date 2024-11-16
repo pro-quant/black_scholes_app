@@ -20,19 +20,6 @@ if "values" not in st.session_state:
 st.title("Expanded Black-Scholes Option Pricing Model with Sensitivities")
 st.markdown("For more details on the Black-Scholes model, check out our [documentation page](https://your-quarto-site.com/black_scholes).")
 
-# Reset functionality
-col1, col2 = st.columns([1, 3])
-
-with col1:
-    reset = st.button("Reset")
-
-with col2:
-    calculate = st.button("Calculate")
-
-if reset:
-    # Reset to default values
-    st.session_state["values"] = default_values.copy()
-
 # Input fields for the Black-Scholes model with dividends
 S = st.number_input("Stock Price (S)", value=st.session_state["values"]["S"], key="S", step=1.0)
 K = st.number_input("Strike Price (K)", value=st.session_state["values"]["K"], key="K", step=1.0)
@@ -55,6 +42,19 @@ if sigma < 0 or sigma > 1:
 if q < 0 or q > 1:
     st.warning("Please enter the dividend yield (q) as a decimal between 0 and 1 (e.g., 0.02 for 2%).")
     inputs_valid = False
+
+# Buttons layout
+col1, col2 = st.columns([1, 1])  # Equal width for buttons
+
+with col1:
+    reset = st.button("Reset")
+
+with col2:
+    calculate = st.button("Calculate")
+
+if reset:
+    # Reset to default values
+    st.session_state["values"] = default_values.copy()
 
 # Black-Scholes function for call and put options with dividends
 def black_scholes(S, K, T, r, sigma, q):
