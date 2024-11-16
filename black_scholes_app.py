@@ -16,29 +16,22 @@ def initialize_default_values():
     }
 
 
-# Function to reset values to defaults
+# Reset session state directly
 def reset_to_defaults():
     defaults = initialize_default_values()
-    for key, value in defaults.items():
-        st.session_state[key] = value
+    for key in defaults:
+        if key in st.session_state:
+            del st.session_state[key]
 
 
 # Function to display input fields
-def display_inputs():
-    st.session_state.setdefault("S", initialize_default_values()["S"])
-    st.session_state.setdefault("K", initialize_default_values()["K"])
-    st.session_state.setdefault("T", initialize_default_values()["T"])
-    st.session_state.setdefault("r", initialize_default_values()["r"])
-    st.session_state.setdefault("sigma", initialize_default_values()["sigma"])
-    st.session_state.setdefault("q", initialize_default_values()["q"])
-
-    S = st.number_input("Stock Price (S)", key="S", step=1.0)
-    K = st.number_input("Strike Price (K)", key="K", step=1.0)
-    T = st.number_input("Time to Maturity (T, in years)", key="T", step=0.1)
-    r = st.number_input("Risk-Free Rate (r, enter as a decimal)", key="r", step=0.01)
-    sigma = st.number_input("Volatility (σ, enter as a decimal)", key="sigma", step=0.01)
-    q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", key="q", step=0.01)
-
+def display_inputs(defaults):
+    S = st.number_input("Stock Price (S)", value=defaults["S"], key="S", step=1.0)
+    K = st.number_input("Strike Price (K)", value=defaults["K"], key="K", step=1.0)
+    T = st.number_input("Time to Maturity (T, in years)", value=defaults["T"], key="T", step=0.1)
+    r = st.number_input("Risk-Free Rate (r, enter as a decimal)", value=defaults["r"], key="r", step=0.01)
+    sigma = st.number_input("Volatility (σ, enter as a decimal)", value=defaults["sigma"], key="sigma", step=0.01)
+    q = st.number_input("Dividend Yield (q, enter as a decimal, e.g., 0.02 for 2%)", value=defaults["q"], key="q", step=0.01)
     return S, K, T, r, sigma, q
 
 
@@ -88,7 +81,11 @@ def run_app():
     st.title("Expanded Black-Scholes Option Pricing Model with Sensitivities")
     st.markdown("For more details on the Black-Scholes model, check out our [documentation page](https://your-quarto-site.com/black_scholes).")
 
-    S, K, T, r, sigma, q = display_inputs()
+    # Get default values
+    defaults = initialize_default_values()
+
+    # Display input fields
+    S, K, T, r, sigma, q = display_inputs(defaults)
 
     # Buttons layout
     col1, col2 = st.columns([1, 1])
