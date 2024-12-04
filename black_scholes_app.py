@@ -24,7 +24,7 @@ def reset_to_defaults():
             del st.session_state[key]
 
 
-# Function to display input fields
+#  display input fields
 def display_inputs(defaults):
     S = st.number_input("Stock Price (S)", value=defaults["S"], key="S", step=1.0)
     K = st.number_input("Strike Price (K)", value=defaults["K"], key="K", step=1.0)
@@ -35,7 +35,7 @@ def display_inputs(defaults):
     return S, K, T, r, sigma, q
 
 
-# Function to validate inputs
+# validate inputs
 def validate_inputs(r, sigma, q):
     valid = True
     if r < 0 or r > 1:
@@ -50,7 +50,7 @@ def validate_inputs(r, sigma, q):
     return valid
 
 
-# Black-Scholes function
+# Black-Scholes 
 def black_scholes(S, K, T, r, sigma, q):
     d1 = (np.log(S / K) + (r - q + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
     d2 = d1 - sigma * np.sqrt(T)
@@ -59,7 +59,7 @@ def black_scholes(S, K, T, r, sigma, q):
     return call_price, put_price, d1, d2
 
 
-# Function to calculate Greeks
+# greeks
 def calculate_greeks(S, K, T, r, sigma, q, d1, d2):
     call_delta = np.exp(-q * T) * norm.cdf(d1)
     put_delta = np.exp(-q * T) * (norm.cdf(d1) - 1)
@@ -78,9 +78,8 @@ def calculate_greeks(S, K, T, r, sigma, q, d1, d2):
 
 # Main app logic
 def run_app():
-    st.title("Expanded Black-Scholes Option Pricing Model with Sensitivities")
-    st.markdown("For more details on the Black-Scholes model, check out our [documentation page](https://your-quarto-site.com/black_scholes).")
-
+    st.title("Black-Scholes Option Pricing Model with Sensitivities")
+    
     # Get default values
     defaults = initialize_default_values()
 
